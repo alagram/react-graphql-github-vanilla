@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { GET_ORGANIZATION } from "./queries";
+import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
   baseURL: "https://api.github.com/graphql",
@@ -15,7 +16,9 @@ const TITLE = "React GraphQL Github Client";
 
 class App extends Component {
   state = {
-    path: "the-road-to-learn-react/the-road-to-learn-react"
+    path: "the-road-to-learn-react/the-road-to-learn-react",
+    organization: null,
+    errors: null
   };
 
   componentDidMount() {
@@ -33,13 +36,17 @@ class App extends Component {
   };
 
   onFetchFromGuthub = () => {
-    axiosGithubGraphQL
-      .post("", { query: GET_ORGANIZATION })
-      .then(result => console.log(result));
+    axiosGithubGraphQL.post("", { query: GET_ORGANIZATION }).then(result =>
+      this.setState(() => ({
+        organization: result.data.data.organization,
+        errors: result.data.errors
+      }))
+    );
   };
 
   render() {
-    const { path } = this.state;
+    const { path, organization, errors } = this.state;
+
     return (
       <div>
         <h1>{TITLE}</h1>
@@ -55,6 +62,14 @@ class App extends Component {
           />
           <button type="submit">Search</button>
         </form>
+
+        <hr />
+
+        {organization ? (
+          <Organization organization={organization} errors={errors} />
+        ) : (
+          <p>No information yet...</p>
+        )}
       </div>
     );
   }
