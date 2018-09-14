@@ -1,9 +1,9 @@
-export const getIssuesOfRepositoryQuery = (organization, repository) => `
-  {
-    organization(login: "${organization}") {
+export const GET_ISSUES_OF_REPOSITORY = `
+  query ($organization: String!, $repository: String!) {
+    organization(login: $organization) {
       name
       url
-      repository(name: "${organization}") {
+      repository(name: $repository) {
         name
         url
         issues(last: 5) {

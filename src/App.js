@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { getIssuesOfRepositoryQuery } from "./queries";
+import { GET_ISSUES_OF_REPOSITORY } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -18,7 +18,8 @@ const getIssuesOfRepository = path => {
   const [organization, repository] = path.split("/");
 
   return axiosGithubGraphQL.post("", {
-    query: getIssuesOfRepositoryQuery(organization, repository)
+    query: GET_ISSUES_OF_REPOSITORY,
+    variables: { organization, repository }
   });
 };
 
