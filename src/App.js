@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_ISSUES_OF_REPOSITORY } from "./queries";
+import { getIssuesOfRepositoryQuery } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -14,6 +14,19 @@ const axiosGithubGraphQL = axios.create({
 
 const TITLE = "React GraphQL Github Client";
 
+const getIssuesOfRepository = path => {
+  const [organization, repository] = path.split("/");
+
+  return axiosGithubGraphQL.post("", {
+    query: getIssuesOfRepositoryQuery(organization, repository)
+  });
+};
+
+const resolveIssuesQuery = queryResult => () => ({
+  organization: queryResult.data.data.organization,
+  errors: queryResult.data.errors
+});
+
 class App extends Component {
   state = {
     path: "the-road-to-learn-react/the-road-to-learn-react",
@@ -22,7 +35,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.onFetchFromGuthub();
+    this.onFetchFromGuthub(this.state.path);
   }
 
   onChange = event => {
@@ -30,20 +43,15 @@ class App extends Component {
   };
 
   onSubmit = event => {
-    // fetch data
+    this.onFetchFromGuthub(this.state.path);
 
     event.preventDefault();
   };
 
-  onFetchFromGuthub = () => {
-    axiosGithubGraphQL
-      .post("", { query: GET_ISSUES_OF_REPOSITORY })
-      .then(result =>
-        this.setState(() => ({
-          organization: result.data.data.organization,
-          errors: result.data.errors
-        }))
-      );
+  onFetchFromGuthub = path => {
+    getIssuesOfRepository(path).then(queryResult =>
+      this.setState(resolveIssuesQuery(queryResult))
+    );
   };
 
   render() {

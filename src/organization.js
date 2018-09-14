@@ -12,13 +12,15 @@ const Organization = ({ organization, errors }) => {
   }
 
   return (
-    <div>
-      <p>
-        <strong>Issues from Organization:</strong>
-        <a href={organization.url}>{organization.name}</a>
-      </p>
-      <Repository repository={organization.repository} />
-    </div>
+    console.log(organization) || (
+      <div>
+        <p>
+          <strong>Issues from Organization:</strong>
+          <a href={organization.url}>{organization.name}</a>
+        </p>
+        <Repository repository={organization.repository} />
+      </div>
+    )
   );
 };
 
