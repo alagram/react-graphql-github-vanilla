@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_REPOSITORY_OF_ORGANIZATION } from "./queries";
+import { GET_ISSUES_OF_REPOSITORY } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -37,7 +37,7 @@ class App extends Component {
 
   onFetchFromGuthub = () => {
     axiosGithubGraphQL
-      .post("", { query: GET_REPOSITORY_OF_ORGANIZATION })
+      .post("", { query: GET_ISSUES_OF_REPOSITORY })
       .then(result =>
         this.setState(() => ({
           organization: result.data.data.organization,

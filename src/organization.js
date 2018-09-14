@@ -1,4 +1,5 @@
 import React from "react";
+import Repository from "./repository";
 
 const Organization = ({ organization, errors }) => {
   if (errors) {
@@ -20,14 +21,5 @@ const Organization = ({ organization, errors }) => {
     </div>
   );
 };
-
-const Repository = ({ repository }) => (
-  <div>
-    <p>
-      <strong>In Repository: </strong>
-      <a href={repository.url}>{repository.name}</a>
-    </p>
-  </div>
-);
 
 export default Organization;
