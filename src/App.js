@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_ORGANIZATION } from "./queries";
+import { GET_REPOSITORY_OF_ORGANIZATION } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -36,12 +36,14 @@ class App extends Component {
   };
 
   onFetchFromGuthub = () => {
-    axiosGithubGraphQL.post("", { query: GET_ORGANIZATION }).then(result =>
-      this.setState(() => ({
-        organization: result.data.data.organization,
-        errors: result.data.errors
-      }))
-    );
+    axiosGithubGraphQL
+      .post("", { query: GET_REPOSITORY_OF_ORGANIZATION })
+      .then(result =>
+        this.setState(() => ({
+          organization: result.data.data.organization,
+          errors: result.data.errors
+        }))
+      );
   };
 
   render() {
