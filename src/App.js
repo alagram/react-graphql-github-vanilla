@@ -14,12 +14,12 @@ const axiosGithubGraphQL = axios.create({
 
 const TITLE = "React GraphQL Github Client";
 
-const getIssuesOfRepository = path => {
+const getIssuesOfRepository = (path, cursor) => {
   const [organization, repository] = path.split("/");
 
   return axiosGithubGraphQL.post("", {
     query: GET_ISSUES_OF_REPOSITORY,
-    variables: { organization, repository }
+    variables: { organization, repository, cursor }
   });
 };
 
@@ -49,10 +49,16 @@ class App extends Component {
     event.preventDefault();
   };
 
-  onFetchFromGuthub = path => {
-    getIssuesOfRepository(path).then(queryResult =>
-      this.setState(resolveIssuesQuery(queryResult))
+  onFetchFromGuthub = (path, cursor) => {
+    getIssuesOfRepository(path, cursor).then(queryResult =>
+      this.setState(resolveIssuesQuery(queryResult, cursor))
     );
+  };
+
+  onFetchMoreIssues = () => {
+    const { endCursor } = this.state.organization.repository.issues.pageInfo;
+
+    this.onFetchFromGuthub(this.state.path, endCursor);
   };
 
   render() {
@@ -77,7 +83,11 @@ class App extends Component {
         <hr />
 
         {organization ? (
-          <Organization organization={organization} errors={errors} />
+          <Organization
+            organization={organization}
+            errors={errors}
+            onFetchMoreIssues={this.onFetchMoreIssues}
+          />
         ) : (
           <p>No information yet...</p>
         )}
