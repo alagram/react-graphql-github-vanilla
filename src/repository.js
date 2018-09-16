@@ -13,7 +13,7 @@ const Repository = ({ repository, onFetchMoreIssues, onStarRepository }) => (
         onStarRepository(repository.id, repository.viewerHasStarred)
       }
     >
-      {repository.stargazers.totalCount}
+      {repository.stargazers.totalCount} &nbsp;
       {repository.viewerHasStarred ? "Unstar" : "Star"}
     </button>
 
