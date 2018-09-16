@@ -47,3 +47,13 @@ export const ADD_STAR = `
     }
   }
 `;
+
+export const REMOVE_STAR = `
+  mutation ($repositoryId: ID!) {
+    removeStar(input: { starrableId: $repositoryId }) {
+      starrable {
+        viewerHasStarred
+      }
+    }
+  }
+`;

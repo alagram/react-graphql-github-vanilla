@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_ISSUES_OF_REPOSITORY, ADD_STAR } from "./queries";
+import { GET_ISSUES_OF_REPOSITORY, ADD_STAR, REMOVE_STAR } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -59,6 +59,13 @@ const addStarToRepository = repositoryId => {
   });
 };
 
+const removeStarFromRepository = repositoryId => {
+  return axiosGithubGraphQL.post("", {
+    query: REMOVE_STAR,
+    variables: { repositoryId }
+  });
+};
+
 const resolveAddStarMutation = mutatationResult => state => {
   const { viewerHasStarred } = mutatationResult.data.data.addStar.starrable;
 
@@ -73,6 +80,26 @@ const resolveAddStarMutation = mutatationResult => state => {
         viewerHasStarred,
         stargazers: {
           totalCount: totalCount + 1
+        }
+      }
+    }
+  };
+};
+
+const resolveRemoveStarMutation = mutatationResult => state => {
+  const { viewerHasStarred } = mutatationResult.data.data.removeStar.starrable;
+
+  const { totalCount } = state.organization.repository.stargazers;
+
+  return {
+    ...state,
+    organization: {
+      ...state.organization,
+      repository: {
+        ...state.organization.repository,
+        viewerHasStarred,
+        stargazers: {
+          totalCount: totalCount - 1
         }
       }
     }
@@ -113,9 +140,15 @@ class App extends Component {
   };
 
   onStarRepository = (repositoryId, viewerHasStarred) => {
-    addStarToRepository(repositoryId).then(mutatationResult =>
-      this.setState(resolveAddStarMutation(mutatationResult))
-    );
+    if (viewerHasStarred) {
+      removeStarFromRepository(repositoryId).then(mutatationResult =>
+        this.setState(resolveRemoveStarMutation(mutatationResult))
+      );
+    } else {
+      addStarToRepository(repositoryId).then(mutatationResult =>
+        this.setState(resolveAddStarMutation(mutatationResult))
+      );
+    }
   };
 
   render() {
