@@ -6,7 +6,7 @@ export const GET_ISSUES_OF_REPOSITORY = `
       repository(name: $repository) {
         name
         url
-        issues(first: 5, after: $cursor, states: [OPEN]) {
+        issues(first: 3, after: $cursor, states: [OPEN]) {
           edges {
             node {
               id
