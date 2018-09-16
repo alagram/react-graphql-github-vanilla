@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_ISSUES_OF_REPOSITORY } from "./queries";
+import { GET_ISSUES_OF_REPOSITORY, ADD_STAR } from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -52,6 +52,28 @@ const resolveIssuesQuery = (queryResult, cursor) => state => {
   };
 };
 
+const addStarToRepository = repositoryId => {
+  return axiosGithubGraphQL.post("", {
+    query: ADD_STAR,
+    variables: { repositoryId }
+  });
+};
+
+const resolveAddStarMutation = mutatationResult => state => {
+  const { viewerHasStarred } = mutatationResult.data.data.addStar.starrable;
+
+  return {
+    ...state,
+    organization: {
+      ...state.organization,
+      repository: {
+        ...state.organization.repository,
+        viewerHasStarred
+      }
+    }
+  };
+};
+
 class App extends Component {
   state = {
     path: "the-road-to-learn-react/the-road-to-learn-react",
@@ -85,6 +107,12 @@ class App extends Component {
     this.onFetchFromGuthub(this.state.path, endCursor);
   };
 
+  onStarRepository = (repositoryId, viewerHasStarred) => {
+    addStarToRepository(repositoryId).then(mutatationResult =>
+      this.setState(resolveAddStarMutation(mutatationResult))
+    );
+  };
+
   render() {
     const { path, organization, errors } = this.state;
 
@@ -111,6 +139,7 @@ class App extends Component {
             organization={organization}
             errors={errors}
             onFetchMoreIssues={this.onFetchMoreIssues}
+            onStarRepository={this.onStarRepository}
           />
         ) : (
           <p>No information yet...</p>
