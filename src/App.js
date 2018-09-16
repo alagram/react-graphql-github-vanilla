@@ -62,13 +62,18 @@ const addStarToRepository = repositoryId => {
 const resolveAddStarMutation = mutatationResult => state => {
   const { viewerHasStarred } = mutatationResult.data.data.addStar.starrable;
 
+  const { totalCount } = state.organization.repository.stargazers;
+
   return {
     ...state,
     organization: {
       ...state.organization,
       repository: {
         ...state.organization.repository,
-        viewerHasStarred
+        viewerHasStarred,
+        stargazers: {
+          totalCount: totalCount + 1
+        }
       }
     }
   };

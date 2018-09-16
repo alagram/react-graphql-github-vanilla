@@ -7,6 +7,9 @@ export const GET_ISSUES_OF_REPOSITORY = `
         id
         name
         url
+        stargazers {
+          totalCount
+        }
         viewerHasStarred
         issues(first: 3, after: $cursor, states: [OPEN]) {
           edges {
