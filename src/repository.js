@@ -1,4 +1,5 @@
 import React from "react";
+import ReactionsList from "./reactionsList";
 
 const Repository = ({ repository, onFetchMoreIssues, onStarRepository }) => (
   <div>
@@ -23,7 +24,7 @@ const Repository = ({ repository, onFetchMoreIssues, onStarRepository }) => (
           <a href={issue.node.url}>{issue.node.title}</a>
           <ul>
             {issue.node.reactions.edges.map(reaction => (
-              <li key={reaction.node.id}>{reaction.node.content}</li>
+              <ReactionsList key={reaction.node.id} reaction={reaction} />
             ))}
           </ul>
         </li>
