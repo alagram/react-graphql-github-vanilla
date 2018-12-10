@@ -143,15 +143,13 @@ class App extends Component {
     this.onFetchFromGuthub(this.state.path, endCursor);
   };
 
-  onStarRepository = (repositoryId, viewerHasStarred) => {
+  onStarRepository = async (repositoryId, viewerHasStarred) => {
     if (viewerHasStarred) {
-      removeStarFromRepository(repositoryId).then(mutatationResult =>
-        this.setState(resolveRemoveStarMutation(mutatationResult))
-      );
+      const mutatationResult = await removeStarFromRepository(repositoryId);
+      this.setState(resolveRemoveStarMutation(mutatationResult));
     } else {
-      addStarToRepository(repositoryId).then(mutatationResult =>
-        this.setState(resolveAddStarMutation(mutatationResult))
-      );
+      const mutatationResult = await addStarToRepository(repositoryId);
+      this.setState(resolveAddStarMutation(mutatationResult));
     }
   };
 
