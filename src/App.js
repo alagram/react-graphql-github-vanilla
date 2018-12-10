@@ -127,10 +127,14 @@ class App extends Component {
     event.preventDefault();
   };
 
-  onFetchFromGuthub = (path, cursor) => {
-    getIssuesOfRepository(path, cursor).then(queryResult =>
-      this.setState(resolveIssuesQuery(queryResult, cursor))
-    );
+  onFetchFromGuthub = async (path, cursor) => {
+    try {
+      const queryResult = await getIssuesOfRepository(path, cursor);
+
+      this.setState(resolveIssuesQuery(queryResult, cursor));
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
 
   onFetchMoreIssues = () => {
