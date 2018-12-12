@@ -22,6 +22,11 @@ export const GET_ISSUES_OF_REPOSITORY = `
                   node {
                     id
                     content
+                    reactable {
+                      reactions(content: THUMBS_UP) {
+                        viewerHasReacted
+                      }
+                    }
                   }
                 }
               }
@@ -53,6 +58,20 @@ export const REMOVE_STAR = `
     removeStar(input: { starrableId: $repositoryId }) {
       starrable {
         viewerHasStarred
+      }
+    }
+  }
+`;
+
+export const ADD_REACTION = `
+  mutation ($issueId: ID!) {
+    addReaction(input: { subjectId: $issueId, content: THUMBS_UP }) {
+      reaction {
+        id
+        content
+        reactable {
+          id
+        }
       }
     }
   }

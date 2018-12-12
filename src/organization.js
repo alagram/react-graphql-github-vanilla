@@ -5,7 +5,8 @@ const Organization = ({
   organization,
   errors,
   onFetchMoreIssues,
-  onStarRepository
+  onStarRepository,
+  onIssueReaction
 }) => {
   if (errors) {
     return (
@@ -26,6 +27,7 @@ const Organization = ({
         repository={organization.repository}
         onFetchMoreIssues={onFetchMoreIssues}
         onStarRepository={onStarRepository}
+        onIssueReaction={onIssueReaction}
       />
     </div>
   );

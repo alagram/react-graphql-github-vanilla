@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { GET_ISSUES_OF_REPOSITORY, ADD_STAR, REMOVE_STAR } from "./queries";
+import {
+  GET_ISSUES_OF_REPOSITORY,
+  ADD_STAR,
+  REMOVE_STAR,
+  ADD_REACTION
+} from "./queries";
 import Organization from "./organization";
 
 const axiosGithubGraphQL = axios.create({
@@ -64,6 +69,32 @@ const removeStarFromRepository = repositoryId => {
     query: REMOVE_STAR,
     variables: { repositoryId }
   });
+};
+
+const addReactionToIssue = issueId => {
+  return axiosGithubGraphQL.post("", {
+    query: ADD_REACTION,
+    variables: { issueId }
+  });
+};
+
+const resolveAddReactionMutation = mutatationResult => state => {
+  const { data } = mutatationResult.data;
+  console.log("Data: ", data);
+
+  return {
+    ...state,
+    organization: {
+      ...state.organization,
+      repository: {
+        ...state.organization.repository,
+        issues: { ...state.organization.repository.issues }
+      }
+    },
+    addReaction: {
+      ...data.addReaction
+    }
+  };
 };
 
 const resolveAddStarMutation = mutatationResult => state => {
@@ -153,8 +184,14 @@ class App extends Component {
     }
   };
 
+  onIssueReaction = async issueId => {
+    const mutatationResult = await addReactionToIssue(issueId);
+    this.setState(resolveAddReactionMutation(mutatationResult));
+  };
+
   render() {
     const { path, organization, errors } = this.state;
+    console.log("State", this.state);
 
     return (
       <div>
@@ -180,6 +217,7 @@ class App extends Component {
             errors={errors}
             onFetchMoreIssues={this.onFetchMoreIssues}
             onStarRepository={this.onStarRepository}
+            onIssueReaction={this.onIssueReaction}
           />
         ) : (
           <p>No information yet...</p>
