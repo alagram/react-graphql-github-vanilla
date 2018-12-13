@@ -24,25 +24,21 @@ const Repository = ({
     </button>
 
     <ul>
-      {repository.issues.edges.map(
-        issue =>
-          console.log("Issue:", issue) || (
-            <li key={issue.node.id}>
-              <a href={issue.node.url}>{issue.node.title}</a> &nbsp;
-              <button
-                type="button"
-                onClick={() => onIssueReaction(issue.node.id)}
-              >
-                THUMBS_UP
-              </button>
-              <ul>
-                {issue.node.reactions.edges.map(reaction => (
-                  <ReactionsList key={reaction.node.id} reaction={reaction} />
-                ))}
-              </ul>
-            </li>
-          )
-      )}
+      {repository.issues.edges.map(issue => (
+        <li key={issue.node.id}>
+          <a href={issue.node.url}>{issue.node.title}</a> &nbsp;
+          <ul>
+            {issue.node.reactions.edges.map(reaction => (
+              <ReactionsList
+                key={reaction.node.id}
+                reaction={reaction}
+                issue={issue}
+                onIssueReaction={onIssueReaction}
+              />
+            ))}
+          </ul>
+        </li>
+      ))}
     </ul>
 
     <hr />

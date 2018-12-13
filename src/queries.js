@@ -17,7 +17,7 @@ export const GET_ISSUES_OF_REPOSITORY = `
               id
               title
               url
-              reactions(last: 3) {
+              reactions(first: 3) {
                 edges {
                   node {
                     id
@@ -64,8 +64,8 @@ export const REMOVE_STAR = `
 `;
 
 export const ADD_REACTION = `
-  mutation ($issueId: ID!) {
-    addReaction(input: { subjectId: $issueId, content: THUMBS_UP }) {
+  mutation ($issueId: ID!, $reactionContent: String!) {
+    addReaction(input: { subjectId: $issueId, content: $reactionContent }) {
       reaction {
         id
         content

@@ -1,8 +1,22 @@
 import React from "react";
 
-const ReactionsList = ({ reaction }) => {
+const ReactionsList = ({ reaction, issue, onIssueReaction }) => {
   const { viewerHasReacted } = reaction.node.reactable.reactions;
-  return <li>{reaction.node.content}</li>;
+  const { content } = reaction.node;
+
+  return (
+    <React.Fragment>
+      <li>
+        {content} &nbsp;
+        <button
+          type="button"
+          onClick={() => onIssueReaction(issue.node.id, content)}
+        >
+          Give {content}
+        </button>
+      </li>
+    </React.Fragment>
+  );
 };
 
 export default ReactionsList;

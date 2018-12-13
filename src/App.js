@@ -71,10 +71,10 @@ const removeStarFromRepository = repositoryId => {
   });
 };
 
-const addReactionToIssue = issueId => {
+const addReactionToIssue = (issueId, reactionContent) => {
   return axiosGithubGraphQL.post("", {
     query: ADD_REACTION,
-    variables: { issueId }
+    variables: { issueId, reactionContent }
   });
 };
 
@@ -169,6 +169,7 @@ class App extends Component {
   };
 
   onFetchMoreIssues = () => {
+    console.log("State: ", this.state);
     const { endCursor } = this.state.organization.repository.issues.pageInfo;
 
     this.onFetchFromGuthub(this.state.path, endCursor);
@@ -184,14 +185,13 @@ class App extends Component {
     }
   };
 
-  onIssueReaction = async issueId => {
-    const mutatationResult = await addReactionToIssue(issueId);
+  onIssueReaction = async (issueId, reactionContent) => {
+    const mutatationResult = await addReactionToIssue(issueId, reactionContent);
     this.setState(resolveAddReactionMutation(mutatationResult));
   };
 
   render() {
     const { path, organization, errors } = this.state;
-    console.log("State", this.state);
 
     return (
       <div>
