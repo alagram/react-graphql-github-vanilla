@@ -78,9 +78,8 @@ const addReactionToIssue = (issueId, reactionContent) => {
   });
 };
 
-const resolveAddReactionMutation = mutatationResult => state => {
-  const { data } = mutatationResult.data;
-  console.log("Data: ", data);
+const resolveAddReactionMutation = mutationResult => state => {
+  // const { data } = mutationResult.data;
 
   return {
     ...state,
@@ -90,15 +89,12 @@ const resolveAddReactionMutation = mutatationResult => state => {
         ...state.organization.repository,
         issues: { ...state.organization.repository.issues }
       }
-    },
-    addReaction: {
-      ...data.addReaction
     }
   };
 };
 
-const resolveAddStarMutation = mutatationResult => state => {
-  const { viewerHasStarred } = mutatationResult.data.data.addStar.starrable;
+const resolveAddStarMutation = mutationResult => state => {
+  const { viewerHasStarred } = mutationResult.data.data.addStar.starrable;
 
   const { totalCount } = state.organization.repository.stargazers;
 
@@ -117,8 +113,8 @@ const resolveAddStarMutation = mutatationResult => state => {
   };
 };
 
-const resolveRemoveStarMutation = mutatationResult => state => {
-  const { viewerHasStarred } = mutatationResult.data.data.removeStar.starrable;
+const resolveRemoveStarMutation = mutationResult => state => {
+  const { viewerHasStarred } = mutationResult.data.data.removeStar.starrable;
 
   const { totalCount } = state.organization.repository.stargazers;
 
@@ -169,7 +165,6 @@ class App extends Component {
   };
 
   onFetchMoreIssues = () => {
-    console.log("State: ", this.state);
     const { endCursor } = this.state.organization.repository.issues.pageInfo;
 
     this.onFetchFromGuthub(this.state.path, endCursor);
@@ -177,17 +172,17 @@ class App extends Component {
 
   onStarRepository = async (repositoryId, viewerHasStarred) => {
     if (viewerHasStarred) {
-      const mutatationResult = await removeStarFromRepository(repositoryId);
-      this.setState(resolveRemoveStarMutation(mutatationResult));
+      const mutationResult = await removeStarFromRepository(repositoryId);
+      this.setState(resolveRemoveStarMutation(mutationResult));
     } else {
-      const mutatationResult = await addStarToRepository(repositoryId);
-      this.setState(resolveAddStarMutation(mutatationResult));
+      const mutationResult = await addStarToRepository(repositoryId);
+      this.setState(resolveAddStarMutation(mutationResult));
     }
   };
 
   onIssueReaction = async (issueId, reactionContent) => {
-    const mutatationResult = await addReactionToIssue(issueId, reactionContent);
-    this.setState(resolveAddReactionMutation(mutatationResult));
+    const mutationResult = await addReactionToIssue(issueId, reactionContent);
+    this.setState(resolveAddReactionMutation(mutationResult));
   };
 
   render() {

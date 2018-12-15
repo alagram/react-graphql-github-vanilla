@@ -6,47 +6,63 @@ const Repository = ({
   onFetchMoreIssues,
   onStarRepository,
   onIssueReaction
-}) => (
-  <div>
-    <p>
-      <strong>In Repository: </strong>
-      <a href={repository.url}>{repository.name}</a>
-    </p>
+}) => {
+  const issuesReactionCountMap = {};
+  const { edges: issues } = repository.issues;
 
-    <button
-      type="button"
-      onClick={() =>
-        onStarRepository(repository.id, repository.viewerHasStarred)
+  issues.forEach(issue => {
+    let innerObj = {};
+    issue.node.reactions.edges.forEach(reaction => {
+      let { content } = reaction.node;
+      issuesReactionCountMap[issue.node.id] = innerObj;
+      if (content in innerObj) {
+        issuesReactionCountMap[issue.node.id][content]++;
+      } else {
+        issuesReactionCountMap[issue.node.id][content] = 1;
       }
-    >
-      {repository.stargazers.totalCount} &nbsp;
-      {repository.viewerHasStarred ? "Unstar" : "Star"}
-    </button>
+    });
+  });
 
-    <ul>
-      {repository.issues.edges.map(issue => (
-        <li key={issue.node.id}>
-          <a href={issue.node.url}>{issue.node.title}</a> &nbsp;
-          <ul>
-            {issue.node.reactions.edges.map(reaction => (
+  return (
+    <div>
+      <p>
+        <strong>In Repository: </strong>
+        <a href={repository.url}>{repository.name}</a>
+      </p>
+
+      <button
+        type="button"
+        onClick={() =>
+          onStarRepository(repository.id, repository.viewerHasStarred)
+        }
+      >
+        {repository.stargazers.totalCount} &nbsp;
+        {repository.viewerHasStarred ? "Unstar" : "Star"}
+      </button>
+
+      <ul>
+        {repository.issues.edges.map(issue => (
+          <li key={issue.node.id}>
+            <a href={issue.node.url}>{issue.node.title}</a> &nbsp;
+            <ul>
               <ReactionsList
-                key={reaction.node.id}
-                reaction={reaction}
-                issue={issue}
+                key={issue.node.id}
+                contentCountMap={issuesReactionCountMap[issue.node.id]}
+                issueId={issue.node.id}
                 onIssueReaction={onIssueReaction}
               />
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ul>
+            </ul>
+          </li>
+        ))}
+      </ul>
 
-    <hr />
+      <hr />
 
-    {repository.issues.pageInfo.hasNextPage && (
-      <button onClick={onFetchMoreIssues}>More</button>
-    )}
-  </div>
-);
+      {repository.issues.pageInfo.hasNextPage && (
+        <button onClick={onFetchMoreIssues}>More</button>
+      )}
+    </div>
+  );
+};
 
 export default Repository;

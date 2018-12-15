@@ -1,22 +1,18 @@
 import React from "react";
 
-const ReactionsList = ({ reaction, issue, onIssueReaction }) => {
-  const { viewerHasReacted } = reaction.node.reactable.reactions;
-  const { content } = reaction.node;
-
-  return (
-    <React.Fragment>
-      <li>
-        {content} &nbsp;
-        <button
-          type="button"
-          onClick={() => onIssueReaction(issue.node.id, content)}
-        >
+const ReactionsList = ({ contentCountMap, issueId, onIssueReaction }) => {
+  const renderVal = Object.keys(contentCountMap).map((content, idx) => (
+    <React.Fragment key={idx}>
+      <p>
+        {contentCountMap[content]} {content} given
+        <button type="button" onClick={() => onIssueReaction(issueId, content)}>
           Give {content}
         </button>
-      </li>
+      </p>
     </React.Fragment>
-  );
+  ));
+
+  return renderVal;
 };
 
 export default ReactionsList;

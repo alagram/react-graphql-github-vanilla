@@ -22,11 +22,6 @@ export const GET_ISSUES_OF_REPOSITORY = `
                   node {
                     id
                     content
-                    reactable {
-                      reactions(content: THUMBS_UP) {
-                        viewerHasReacted
-                      }
-                    }
                   }
                 }
               }
@@ -64,14 +59,11 @@ export const REMOVE_STAR = `
 `;
 
 export const ADD_REACTION = `
-  mutation ($issueId: ID!, $reactionContent: String!) {
+  mutation ($issueId: ID!, $reactionContent: ReactionContent!) {
     addReaction(input: { subjectId: $issueId, content: $reactionContent }) {
       reaction {
         id
         content
-        reactable {
-          id
-        }
       }
     }
   }
